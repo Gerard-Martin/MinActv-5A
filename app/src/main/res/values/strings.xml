@@ -2,8 +2,8 @@
 <resources>
 
     <string name="app_name">Activity5</string>
-    <string name="wifi">Mobile connected !</string>
-    <string name="mobile">Wifi connected !</string>
+    <string name="wifi">Wifi connected !</string>
+    <string name="mobile">Mobile connected !</string>
     <string name="noNetwork">No network operating !!</string>
 
 </resources>
