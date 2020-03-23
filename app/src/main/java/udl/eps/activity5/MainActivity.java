@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView1;
     private TextView textView2;
 
+    NetworkInfo networkInfo;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -25,38 +27,39 @@ public class MainActivity extends AppCompatActivity {
         textView1.setBackgroundColor(Color.YELLOW);
         textView2 = findViewById(R.id.textView2);
         textView2.setBackgroundColor(Color.GREEN);
+
+        checkConnectivity();
+    }
+
+    private void checkConnectivity() {
+        ConnectivityManager connMgr =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connMgr.getActiveNetworkInfo();
+        String base = " Information:\n \tType: %s \n \tAvailable: %s\n \tConnected: %s\n \tRoaming: %s\n";
+        String result = "";
+        if(networkInfo != null) {
+            result = String.format(base, networkInfo.getType(), networkInfo.isAvailable(), networkInfo.isConnected(), networkInfo.isRoaming());
+        }else{
+            result = "There is no network connected!\n";
+            result += String.format(base, "-", "-", "-", "-");
+        }
+        textView1.setText(result);
         new NetworkAsyncTask().execute();
     }
 
-    @SuppressLint("StaticFieldLeak")
     private class NetworkAsyncTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
             boolean wifiConnected;
             boolean mobileConnected;
-            ConnectivityManager connMgr =
-                    (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            assert connMgr != null;
-            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
-            String result = "Type: " + networkInfo.getType() + "\n" +
-                    "Available: " + networkInfo.isAvailable() + "\n" +
-                    "Subtype Name: " + networkInfo.getSubtypeName() + "\n" +
-                    "Is Connected: " + networkInfo.isConnected() + "\n" +
-                    "Is Roaming: " + networkInfo.isRoaming() + "\n";
-
-            textView1.setText(result);
-
-            if (networkInfo.isConnected()) {
+            if (networkInfo != null && networkInfo.isConnected()) {
                 wifiConnected = networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
                 mobileConnected = networkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
             } else {
                 wifiConnected = false;
                 mobileConnected = false;
             }
-
             if (wifiConnected) {
                 return getString(R.string.wifi);
             } else if(mobileConnected) {
@@ -70,5 +73,11 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
             textView2.setText(s);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkConnectivity();
     }
 }
