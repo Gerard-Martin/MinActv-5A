@@ -5,5 +5,7 @@
     <string name="wifi">Wifi connected !</string>
     <string name="mobile">Mobile connected !</string>
     <string name="noNetwork">No network operating !!</string>
+    <string name="base">Information: \n \tType: %d\n \tAvailable: %s\n \tConnected: %s\n \tRoaming: %s\n</string>
+    <string name="no">There is no network connected!\n</string>
 
 </resources>
